@@ -16,8 +16,8 @@ if __name__=="__main__":
  
     #load data
     #target=julesData("data/gh_point_smc_avail_top.txt")    
-    #target=julesData("data/gh_point_smcl_lvl1.txt")
-    target=julesData("data/gh_point_smcl_lvl2.txt")
+    target=julesData("data/gh_point_smcl_lvl1.txt")
+    #target=julesData("data/gh_point_smcl_lvl2.txt")
     feature1=julesData("data/gh_point_t1p5m_gb.txt")
     feature1.transform_data_to_day_of_year()
     feature2=julesData("data/gh_point_t1p5m_gb.txt")
@@ -30,13 +30,15 @@ if __name__=="__main__":
     feat_list=[feature1,feature2,feature3,feature4]
     
     #generate training and validation data
+    #using np choice here and splitting the sample
+    #in half to ensure independant testing/traning
     n=len(target.data[:])
-    sample=np.random.randint(365,n-365,10000)
-    s_train=sampleBuilder(sample,target,feat_list)
+    sample_tmp=np.arange(365,n-365)
+    sample=np.random.choice(sample_tmp,6000)
+    s_train=sampleBuilder(sample[:3000],target,feat_list)
     s_train.scale()
     #validation:
-    sample=np.random.randint(365,n-365,10000)
-    s_evalt=sampleBuilder(sample,target,feat_list)
+    s_evalt=sampleBuilder(sample[3000:],target,feat_list)
     s_evalt.scale()
     #final year hindcast:
     sample=np.arange(n-365,n)
